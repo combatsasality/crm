@@ -1,12 +1,68 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="CRM" basedir="." default="compile">
+<project name="CRM" basedir="." default="build">
+    <property name="src.dir" value="src" />
+    <property name="build.dir" value="build" />
+    <property name="build.bin" value="${build.dir}/bin" />
+    <property name="dependencies.dir" value="${build.dir}/depends" />
+    <property name="lib.dir" value="libs"/>
+    <property name="main-class" value="com.combatsasality.crm.Main" />
 
-    <target name="compile">
-        <javac srcdir="src" destdir="bin" />
-    </target>
 
     <target name="clean">
-        <delete dir="bin" />
+        <delete dir="${build.dir}" />
     </target>
+
+    <target name="compile" depends="clean">
+        <mkdir dir="${build.bin}" />
+
+        <javac srcdir="${src.dir}" destdir="${build.bin}" >
+            <classpath>
+                <fileset dir="${lib.dir}" includes="*.jar" />
+            </classpath>
+
+        </javac>
+    </target>
+
+    <target name="copy-dependencies">
+        <mkdir dir="${dependencies.dir}" />
+
+        <copy todir="${dependencies.dir}/${lib.dir}">
+            <fileset dir="${lib.dir}" includes="*.jar" />
+        </copy>
+
+
+        <jar jarfile="${dependencies.dir}/all-depends.jar">
+            <zipgroupfileset dir="${dependencies.dir}/${lib.dir}">
+                <include name="**/*.jar" />
+            </zipgroupfileset>
+        </jar>
+
+        <delete dir="${dependencies.dir}/${lib.dir}" />
+    </target>
+
+    <target name="jar" depends="compile, copy-dependencies">
+        <mkdir dir="${build.dir}" />
+
+        <copy todir="${build.bin}">
+            <fileset dir="${src.dir}">
+                <exclude name="data/**"/> <!-- Исключаем все файлы из папки data -->
+            </fileset>
+        </copy>
+
+
+        <jar destfile="${build.dir}/crm.jar" basedir="${build.bin}">
+            <manifest>
+                <attribute name="Main-Class" value="com.combatsasality.crm.Main"/>
+            </manifest>
+            <zipfileset src="${dependencies.dir}/all-depends.jar" excludes="META-INF/*.SF" />
+        </jar>
+        <delete dir="${dependencies.dir}" />
+    </target>
+
+    <target name="build" depends="jar">
+        <delete dir="${build.bin}" />
+    </target>
+
+    <target name="build-save-bin" depends="jar" />
+
 
 </project>

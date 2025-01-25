@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="javafaker-1.0.2">
+  <library name="jline-3.28.0">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/libs/javafaker-1.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jline-3.28.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
