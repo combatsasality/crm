@@ -1,8 +1,6 @@
 package com.combatsasality.crm.persistence;
 
-import com.combatsasality.crm.persistence.entities.User;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 
@@ -13,6 +11,7 @@ import java.io.Writer;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,18 +48,29 @@ public abstract class Repository<E extends Entity> {
         }
     }
 
+
     private void fileNotFound() throws IOException {
-        if (!Files.exists(path)) {
+        if (Files.notExists(Path.of("data/"))) {
+            Files.createDirectory(Paths.get("data/"));
+        }
+        if (Files.notExists(path)) {
             Files.createFile(path);
         }
     }
 
     public void add(E ent) {
+        if (this.entities.stream().anyMatch(e -> e.getId().equals(ent.getId()))) {
+            return;
+        }
         entities.add(ent);
     }
 
     public boolean remove(E ent) {
         return entities.remove(ent);
+    }
+
+    public Set<E> findAll() {
+        return entities;
     }
 
     public void save() {

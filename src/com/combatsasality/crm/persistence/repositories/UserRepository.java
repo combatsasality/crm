@@ -3,6 +3,7 @@ package com.combatsasality.crm.persistence.repositories;
 import com.combatsasality.crm.persistence.Repository;
 import com.combatsasality.crm.persistence.entities.User;
 import com.google.gson.reflect.TypeToken;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.Set;
@@ -20,11 +21,18 @@ public class UserRepository extends Repository<User> {
         return entities.stream().filter(u -> u.getUsername().equals(username)).findFirst();
     }
 
-    @Override
-    public void add(User ent) {
-        if (entities.stream().anyMatch(u -> u.getUsername().equals(ent.getUsername()))) {
-            return;
+
+
+    @Nullable
+    public User authenticate(String username, String password) {
+        Optional<User> user = findByUsername(username);
+        if (!user.isPresent()) {
+            return null;
         }
-        super.add(ent);
+        User userObject = user.get();
+        if (userObject.equalsPassword(password)) {
+            return userObject;
+        }
+        return null;
     }
 }

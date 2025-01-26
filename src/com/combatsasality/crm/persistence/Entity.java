@@ -1,23 +1,32 @@
 package com.combatsasality.crm.persistence;
 
-import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 public abstract class Entity {
     protected final UUID id;
-//    protected final Date createdAt;
+    protected final long createdAt;
 
-    public Entity() {
+    protected Entity() {
         this.id = UUID.randomUUID();
-//        this.createdAt = new Date();
+        this.createdAt = System.currentTimeMillis();
     }
 
     public UUID getId() {
         return this.id;
     }
 
-//    public Date getCreatedAt() {
-//        return this.createdAt;
-//    }
+    public long getCreatedAt() {
+        return this.createdAt;
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Entity ent && ent.getId().equals(this.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, createdAt);
+    }
 }

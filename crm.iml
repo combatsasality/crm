@@ -10,5 +10,6 @@
     <orderEntry type="library" name="gson-2.11.0" level="project" />
     <orderEntry type="library" name="javafaker-1.0.2" level="project" />
     <orderEntry type="library" name="jline-3.28.0" level="project" />
+    <orderEntry type="library" name="annotations-26.0.2" level="project" />
   </component>
 </module>

@@ -2,9 +2,8 @@ package com.combatsasality.crm.persistence.entities;
 
 import com.combatsasality.crm.HelpHandler;
 import com.combatsasality.crm.persistence.Entity;
-import com.combatsasality.crm.persistence.exceptions.BadValidationException;
 
-import static com.combatsasality.crm.HelpHandler.passwordPattern;
+import java.util.Objects;
 
 
 public class User extends Entity {
@@ -13,14 +12,14 @@ public class User extends Entity {
     private final Role role;
 
 
-    public User(String username, String password, Role role) throws BadValidationException {
+    public User(String username, String password, Role role) {
         super();
         this.username = username;
-        this.password = validatePassword(password);
+        this.password = password;
         this.role = role;
     }
 
-    public User(String username, String password) throws BadValidationException {
+    public User(String username, String password) {
         this(username, password, Role.DEFAULT);
     }
 
@@ -32,24 +31,23 @@ public class User extends Entity {
         return this.role;
     }
 
-    private String validatePassword(String password) throws BadValidationException {
-        int passwordLength = password.length();
-        if (passwordLength < 8) {
-            throw new BadValidationException("Пароль занадто маленький");
-        } else if (passwordLength > 32) {
-            throw new BadValidationException("Пароль занадто великий");
-        }
-        if (!password.matches(passwordPattern)) {
-            throw new BadValidationException("Пароль має мати одну цифру і один символ");
-        }
-
-        return HelpHandler.sha256(password);
-    }
-
     public enum Role{
         DEFAULT,
         ADMIN,
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof User user && user.getUsername().equals(this.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, password, role);
+    }
+
+    public boolean equalsPassword(String password) {
+        return HelpHandler.sha256(password).equals(this.password);
+    }
 
 }

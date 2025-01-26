@@ -1,26 +1,28 @@
 package com.combatsasality.crm;
 
 import com.combatsasality.crm.persistence.entities.User;
-import com.combatsasality.crm.persistence.exceptions.BadValidationException;
+import com.combatsasality.crm.persistence.repositories.TicketRepository;
 import com.combatsasality.crm.persistence.repositories.UserRepository;
+import com.combatsasality.crm.ui.UI;
+
+import java.io.IOException;
 
 public class Main {
+    public static final UserRepository userRepository = new UserRepository();
+    public static final TicketRepository ticketRepository = new TicketRepository();
+    public static User currentUser = null;
+
+
+
     public static void main(String[] args) {
+        // TODO: fix dumb terminal
+        System.setProperty("org.jline.terminal.dumb", "true");
+
         try {
-            User user1 = new User("combatsasality1", "3545231d");
-            User user2 = new User("combatsasality2", "3545231d");
-            UserRepository repository = new UserRepository();
-
-            repository.add(user1);
-            repository.add(user2);
-
-            repository.save();
-
-        } catch (BadValidationException e) {
-            System.out.println(e);
+            new UI();
+        } catch (IOException e) {
+            System.out.println(e.fillInStackTrace());
         }
-
-
 
     }
 }
